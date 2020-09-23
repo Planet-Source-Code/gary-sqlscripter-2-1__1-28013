@@ -1,0 +1,196 @@
+SQLScripter 2.1 ReadMe.
+
+Command Line Syntax:
+SQLScripter.exe [/{S|SERVER}=ServerName]
+		[/{U|USER}=Login]
+		[/{P|PW|PASSWORD}=Password]
+		[/{DB|DATABASE}=Database1[,Database2[,n...]]]
+		[/{DBA|DBAOPTIONS}={ALL|[A][B][D][J][L]}]
+		[/DEL=NumberOfWeeks]
+		[/{DIR|DEST|DESTDIR}=d:\path]
+		[/{BG|BACK|BACKGROUND}]
+		[/{ScriptDB|SDB}={true|false}]
+		[/{ScriptTables|STA}={true|false}]
+		[/{ScriptViews|SVI}={true|false}]
+		[/{ScriptSPs|SSP}={true|false}]
+		[/{ScriptRules|SRU}={true|false}]
+		[/{ScriptDefs|SDE}={true|false}]
+		[/{ScriptRoles|SRO}={true|false}]
+		[/{ScriptUsers|SUS}={true|false}]
+		[/{ScriptUDTs|SUD}={true|false}]
+		[/{ScriptFTCs|SFT}={true|false}]
+		[/{DBObjsInSepFiles|SEP}={true|false}]
+		[/{DatePrefixOnFiles|PRE}={true|false}]
+		[/{InsertScriptTables|INS}=Table1[,table2,n...]]
+		[/{ScriptDropsFirst|SDF}={true|false}]
+
+Command Line Switches:
+[/{S|SERVER}=ServerName]
+	ServerName = Name of the server to script from
+[/{U|USER}=Login]
+ 	Login = Login to use to connect to the server. Leave empty for trusted connection.
+[/{P|PW|PASSWORD}=Password]
+	Password = Password to use to connect to the server. Leave empty for trusted connection.
+[/{DB|DATABASE}=Database1[,Database2[,n...]]]
+	Database1[,Database2[,n...]]] = Comma-seperated list of databases to script.
+[/{DBA|DBAOPTIONS}={ALL|[A][B][D][J][L]}]
+	ALL = Enable all DBA scripting options.
+	Or use any combination of the following:
+	A = Script alerts and operators.
+	B = Script Backup Devices.
+	D = Save DTS Packages as Structured Storage Files.
+	J = Script the SQL-Server Agent jobs.
+	L = Script the server logins.
+[/DEL=NumberOfWeeks]
+	NumberOfWeeks = Number of weeks to keep old files. Omit to keep all old files.
+[/{DIR|DEST|DESTDIR}=d:\path]
+	d:\path = destination directory for the scripts.
+[/{BG|BACK|BACKGROUND}]
+	Run in the background without a GUI. SQLScripter will do this automatically whenever
+	you provide the server, destination dir and database command-line switches. Use the
+	BACKGROUND switch if you only need to script server objects and don't need to provide
+	a list of databases to script.
+[/{ScriptDB|SDB}={true|false}]
+	Script selected databases
+[/{ScriptTables|STA}={true|false}]
+	Script all tables in selected databases
+[/{ScriptViews|SVI}={true|false}]
+	Script all viewsin selected databases
+[/{ScriptSPs|SSP}={true|false}]
+	Script all stored proceduresin selected databases
+[/{ScriptRules|SRU}={true|false}]
+	Script all rules in selected databases
+[/{ScriptDefs|SDE}={true|false}]
+	Script all defaults in selected databases
+[/{ScriptRoles|SRO}={true|false}]
+	Script all roles in selected databases
+[/{ScriptUsers|SUS}={true|false}]
+	Script all users in selected databases
+[/{ScriptUDTs|SUD}={true|false}]
+	Script all user defined types in selected databases
+[/{ScriptFTCs|SFT}={true|false}]
+	Script all full text catalogs in selected databases
+[/{DBObjsInSepFiles|SEP}={true|false}]
+	Put scripts for database objects (tables, views and stored procedures) in separate files. 
+	The name of the object will be used in the filename: [datestamp.]<database name>_<object name>.sql
+	If false then all tables will be written to a single file, as will views and stored procedures.
+	Tables selected to create INSERT scripts for will also be written to single files if this option
+	is selected - the filenames will be the same as above except with "_Insert" appended.
+[/{DatePrefixOnFiles|PRE}={true|false}]
+	Prefixes filenames with a date stamp in the syntax: yyyymmdd.
+[/{InsertScriptTables|INS}=Table1[,table2,n...]]
+	Comma delimited list of tables to generate INSERT scripts for. This is really the only additional
+	bit of functionality that has been added to v2.1. The GUI has also been updated to allow tables to
+	be selected from a list.
+[/{ScriptDropsFirst|SDF}={true|false}]
+	When you've got a lot of tables, views and SPs that are interdependent on each other then you may
+	need to execute the generated scripts several times as some objects might not be created in time.
+	Setting this option to first puts all the drop statements together at the top of the script so that
+	if need be, you can execute the whole script once and then just the create section as many times as
+	necessary. Note that this option doesn't make sense if the DBObjsInSepFiles (see above) option is on
+	and will be ignored.
+
+All parameters are optional.
+- When the /BACKGROUND switch is specified, the program will start scripting unattended - provided
+that the servername and destination directory switches are specified.
+- When the /SERVER, /DATABASE and /DESTDIR parameters are all specified the program will also
+run unattended.
+- When neither of the above two points are true, the program will fire up the GUI with the on the
+command line specified parameters already filled in.
+
+
+GUI operation:
+After starting up the program, select a server from the list or enter the server name if it's
+not in the list and choose an authentication mode (fill in the login and password fields if
+you're using SQL Server authenticaton). Click the "Connect & Fetch Databases" button. Now select
+the databases you want to script objects from, enter or select a destination directory and decide
+if you want to program to delete old files for you. Go to the Options tab and select all the
+types of objects you want to generate scripts for. Once all your choices are made, click the
+Generate button and the program will start generating scripts, showing you a log of its current
+activity.
+Once you're done you can go back to the Scripting tab and select another server to script
+objects from. If you need to log on to the same server using other login credentials, you'll
+have to click the Disconnect button first, and "Connect & Fetch Databases" again after you've
+changed the login and password fields.
+At any time you can click the Save Log button to save the log file of your operations so far
+and click Clear Log button to start a new log with a clean slate.
+
+
+Examples:
+SQLScripter.exe /S=MyServer /U=MyLogin /P=MyPassword
+
+	Starts up the GUI, logs in to MyServer using the MyLogin SQL Server login with password
+	MyPassword and fetches the list of available databases.
+
+
+SQLScripter.exe /S=MyServer /DB=MyDatabase,pubs,Northwind /DIR=C:\Windows\Temp
+
+	Scripts the MyDatabase, pubs and Northwind databases from server MyServer to the
+	C:\Windows\Temp directory, using a trusted (NT) connection. All existing files
+	in this directory will be kept. All this is done unattended.
+
+
+SQLScripter.exe /SERVER=MyServer /DATABASE=MyDatabase,pubs,Northwind /DESTDIR=C:\Windows\Temp
+		/USER=MyLogin /PASSWORD=mypassword /DBA=dj /DEL=2
+
+	Scripts the MyDatabase, pubs and Northwind databases from server MyServer to the
+	C:\Windows\Temp directory, as well as all the DTS Packages and Agent jobs, using
+	'MyLogin' with password 'mypassword' to connect to the server. All existing files
+	in C:\Windows\Temp that are older then 2 weeks will be deleted. All this is done
+	unattended.
+
+SQLScripter.exe /s=MyServer /dba=all /dir=C:\Windows\Temp /bg
+
+	Scripts all Alerts, Operators, Backup devices, SQL Server Agent Jobs and Server Logins.
+	Also saves the DTS Packages as structured storage files, but does not script any database
+	objects. All this is done unattended.
+
+
+Note: Only sysadmins can save/script "server-objects" (DTS Packages, operators/alerts, Agent jobs and
+logins). I would have liked to include the possibility for developers to save their own DTS packages
+using their own login, but due to the various unpredictable quirks of the DTS designer this almost
+seems impossible to accomplish (at least when using mixed security mode).
+To see what I mean, log into your client station using an NT login that has access to the
+server, and then log in to the SQL Server from that station using an SQL Server login. Create a DTS
+package and save it to the server. Now look at the owner column in msdb..sysdtspackages. This will
+contain "DOMAIN\USER" (the NT login) instead of the SQL Server login you created the package with.
+Neat eh? To make it better, look at the owner column of a package created while logged in using NT
+authentication. Instead of the expected "DOMAIN\USER" value, you'll only find "USER" there!? Now tell
+me, are these packages owned by different users, or the same one? If anyone has any tips/workarounds
+considering this problem, please let me know.
+
+
+Visual Basic Version: 6.0                  (Tested with VB6.0 SP4 and SP5)
+
+Libraries used by the program:
+- Microsoft SQLDMO Object Library          (Tested with MS SQL 7.0 SP2 DLLs)
+- Microsoft DTSPackage Object Library      (Tested with MS SQL 7.0 SP2 DLLs)
+
+Components used by the program:
+- Microsoft Windows Common Controls 6.0    (Tested with VB6.0 SP4 and SP5 OCX)
+
+
+Changes since version 2.0:
+- Added feature to generate INSERT scripts for selected tables
+- Re-introduced the use of the ADO libraries to generate INSERT scripts
+- Added command line options that were available from the GUI
+- Added the option to script database objects to separate files
+- Added the option of the datestamp prefix on files
+- Added the option to script database object drops first and then the create calls		
+
+
+Changes since version 1.0:
+- Corrected a bug in scripting the UDTs (which weren't scripted at all in 1.0).
+- Included scripting of Backup Devices.
+- Eliminated the use of ADO libraries.
+- Some minor additions to the log-messages.
+- Tried to include an option for non-sysadmins to save their own DTS Packages, but got so annoyed with
+  the inconsistencies in sysdtspackages (notably the owner column) that I gave up on it.
+
+
+Use this program and code at your own risk! You can use parts or all of this code in your own
+applications if you really want to. I would appreciate it if you can let me know about any bugs you
+find, so that if I find the time I can update my own code with your improvements :)
+
+Jeremy van Dijk
+j.van.dijk@rvbh.nl
